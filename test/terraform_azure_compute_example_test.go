@@ -3,8 +3,9 @@ package test
 import (
 	"testing"
 
+	"aztest/modules/azure"
+
 	"github.com/Azure/azure-sdk-for-go/services/compute/mgmt/2018-06-01/compute"
-	"github.com/allanore/aztest/modules/azure"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 )
