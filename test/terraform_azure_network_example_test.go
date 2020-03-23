@@ -1,23 +1,38 @@
 package test
 
 import (
+	"fmt"
+	"os"
+	"strings"
 	"testing"
 
-	"aztest/modules/azure"
-
+	"github.com/allanore/aztest/modules/azure"
+	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 )
+
+var approvedRegions = []string{
+	// Americas
+	"centralus",
+	"eastus",
+	"eastus2",
+	"northcentralus",
+	"southcentralus",
+	"westcentralus",
+	"westus",
+	"westus2",
+}
 
 // An example of how to test the Terraform module in examples/terraform-azure-example using Terratest.
 func TestTerraformAzureNetworkingExample(t *testing.T) {
 	t.Parallel()
 
 	// Pick a random Azure region to test in.
-	azureRegion := azure.GetRandomStableRegion(t, nil, nil)
+	azureRegion := azure.GetRandomRegion(t, approvedRegions, nil, os.Getenv("ARM_SUBSCRIPTION_ID"))
 
 	// Network Settings for Vnet and Subnet
-	systemName := "testnetworking"
+	systemName := fmt.Sprintf("test-%s", strings.ToLower(random.UniqueId()))
 	vnetAddress := "10.0.0.0/16"
 	subnetPrefix := "10.0.0.0/24"
 
@@ -30,7 +45,8 @@ func TestTerraformAzureNetworkingExample(t *testing.T) {
 		Vars: map[string]interface{}{
 			"system":             systemName,
 			"location":           azureRegion,
-			"vnet_address_space": subnetPrefix,
+			"vnet_address_space": vnetAddress,
+			"subnet_prefix":      subnetPrefix,
 		},
 	}
 
@@ -53,7 +69,7 @@ func TestTerraformAzureNetworkingExample(t *testing.T) {
 	nsgAssociations := azure.GetAssociationsforNSG(t, nsgName, vnetRG, "")
 
 	//Check if the subnet exists in the Virtual Network
-	assert.Contains(t, subnets, *appSubnet.ID)
+	assert.Contains(t, subnets, subnetID)
 
 	//Check if subnet is associated wtih NSG
 	assert.Contains(t, nsgAssociations, subnetID)

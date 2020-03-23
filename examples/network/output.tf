@@ -14,6 +14,6 @@ output "subnet_id" {
 }
 
 output "nsg_name" {
-  description = "Subnet ID"
+  description = "Name of Network Security Group"
   value       = azurerm_network_security_group.nsg.name
 }
