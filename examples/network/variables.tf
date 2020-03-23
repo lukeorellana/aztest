@@ -13,9 +13,9 @@ variable "location" {
 }
 
 variable "vnet_address_space" {
-  type        = list
+  type        = string
   description = "Address space for Virtual Network"
-  default     = ["10.0.0.0/16"]
+  default     = "10.0.0.0/16"
 }
 
 variable "subnet_prefix" {
