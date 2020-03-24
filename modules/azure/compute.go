@@ -101,9 +101,8 @@ func GetTagsForVirtualMachineE(t *testing.T, vmName string, resGroupName string,
 	return tags, nil
 }
 
-
 // GetVMbyName gets the properties of a Virtual Machine in Azure by Name
-func GetVMbyName(t *testing.T, vmName string, resGroupName string, subscriptionID string) compute.VirtualMachine  {
+func GetVMbyName(t *testing.T, vmName string, resGroupName string, subscriptionID string) compute.VirtualMachine {
 	vm, err := GetVMbyNameE(t, vmName, resGroupName, subscriptionID)
 	require.NoError(t, err)
 
@@ -111,7 +110,7 @@ func GetVMbyName(t *testing.T, vmName string, resGroupName string, subscriptionI
 }
 
 // GetVMbyName gets the properties of a Virtual Machine in Azure by Name
-func GetVMbyNameE(t *testing.T, vmName string, resGroupName string, subscriptionID string) (compute.VirtualMachine , error) {
+func GetVMbyNameE(t *testing.T, vmName string, resGroupName string, subscriptionID string) (compute.VirtualMachine, error) {
 	vmProperties := compute.VirtualMachine{}
 
 	// Validate resource group name and subscription ID
@@ -132,6 +131,48 @@ func GetVMbyNameE(t *testing.T, vmName string, resGroupName string, subscription
 		return vm, err
 	}
 
-	return vm,nil
+	return vm, nil
 }
 
+// GetTypeOfVirtualMachineDisks gets the types of the OS and Data disks attached to the Virtual Machine
+func GetTypeOfVirtualMachineDisks(t *testing.T, vmName string, resGroupName string, subscriptionID string) []string {
+	size, err := GetTypeOfVirtualMachineDisksE(t, vmName, resGroupName, subscriptionID)
+	require.NoError(t, err)
+
+	return size
+}
+
+// GetTypeOfVirtualMachineDisks gets the types of the OS and Data disks attached to the Virtual Machine
+func GetTypeOfVirtualMachineDisksE(t *testing.T, vmName string, resGroupName string, subscriptionID string) ([]string, error) {
+	// Validate resource group name and subscription ID
+	resGroupName, err := getTargetAzureResourceGroupName(resGroupName)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create a VM client
+	vmClient, err := GetVirtualMachineClient(subscriptionID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get the details of the target virtual machine
+	vm, err := vmClient.Get(context.Background(), resGroupName, vmName, compute.InstanceView)
+	if err != nil {
+		return nil, err
+	}
+
+	storageAccountTypes := []string{}
+
+	// Add OS Disk to the string slice
+	storageAccountTypes = append(storageAccountTypes, string(vm.StorageProfile.OsDisk.ManagedDisk.StorageAccountType))
+
+	// Add all attached disks to the string slice
+	for _, disk := range *vm.StorageProfile.DataDisks {
+
+		storageAccountTypes = append(storageAccountTypes, string(disk.ManagedDisk.StorageAccountType))
+
+	}
+
+	return storageAccountTypes, nil
+}
