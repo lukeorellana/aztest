@@ -31,6 +31,29 @@ func GetVirtualMachineClient(subscriptionID string) (*compute.VirtualMachinesCli
 	return &vmClient, nil
 }
 
+// GetVirtualMachineExtensionClient is a helper function that will setup an Azure Virtual Machine Extension client on your behalf
+func GetVirtualMachineExtensionsClient(subscriptionID string) (*compute.VirtualMachineExtensionsClient, error) {
+	// Validate Azure subscription ID
+	subscriptionID, err := getTargetAzureSubscription(subscriptionID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create a VM Extension client
+	vmExtClient := compute.NewVirtualMachineExtensionsClient(subscriptionID)
+
+	// Create an authorizer
+	authorizer, err := NewAuthorizer()
+	if err != nil {
+		return nil, err
+	}
+
+	// Attach authorizer to the client
+	vmExtClient.Authorizer = *authorizer
+
+	return &vmExtClient, nil
+}
+
 // GetSizeOfVirtualMachine gets the size type of the given Azure Virtual Machine
 func GetSizeOfVirtualMachine(t *testing.T, vmName string, resGroupName string, subscriptionID string) compute.VirtualMachineSizeTypes {
 	size, err := GetSizeOfVirtualMachineE(t, vmName, resGroupName, subscriptionID)
@@ -175,4 +198,36 @@ func GetTypeOfVirtualMachineDisksE(t *testing.T, vmName string, resGroupName str
 	}
 
 	return storageAccountTypes, nil
+}
+
+// GetVirtualMachineExt gets the Virtual Machine Extensions Information
+func GetVirtualMachineExt(t *testing.T, resGroupName string, vmName string, vmExtName string, subscriptionID string) compute.VirtualMachineExtension {
+	size, err := GetVirtualMachineExtE(t, resGroupName, vmName, vmExtName, subscriptionID)
+	require.NoError(t, err)
+
+	return size
+}
+
+// GetVirtualMachineExt gets the Virtual Machine Extensions Information
+func GetVirtualMachineExtE(t *testing.T, resGroupName string, vmName string, vmExtName string, subscriptionID string) (compute.VirtualMachineExtension, error) {
+	vmExtProperties := compute.VirtualMachineExtension{}
+
+	// Validate resource group name and subscription ID
+	resGroupName, err := getTargetAzureResourceGroupName(resGroupName)
+	if err != nil {
+		return vmExtProperties, err
+	}
+
+	// Create a VM client
+	vmExtClient, err := GetVirtualMachineExtensionsClient(subscriptionID)
+	if err != nil {
+		return vmExtProperties, err
+	}
+
+	// Get the details of the target virtual machine
+	vm, err := vmExtClient.Get(context.Background(), resGroupName, vmName, vmExtName, "")
+	if err != nil {
+		return vmExtProperties, err
+	}
+	return vm, nil
 }

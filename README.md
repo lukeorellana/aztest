@@ -34,7 +34,24 @@ vmProperties := azure.GetVMbyName(t, "vmterraform", "rg-terraexample", "")
 assert.True(t, *vmProperties.VirtualMachineProperties.DiagnosticsProfile.BootDiagnostics.Enabled)
 ```
 
+##### Provisioning State Succeeded
 
+```
+// Lookup Virtual Machine properties by specifying the Virtual Machine name and Resource Group
+vmProperties := azure.GetVMbyName(t, "vmterraform", "rg-terraexample", "")
+
+// Test if VM Provisioned with Succeeded status
+assert.Equal(t, "Succeeded", *vmProperties.VirtualMachineProperties.ProvisioningState)
+```
+
+##### Virtual Machine Extension Provisioned Successfully
+```
+// Lookup Virtual Machine Extension properties by specifying the Virtual Machine name, Resource Group, and VM Extension Name
+vmProperties := azure.GetVirtualMachineExt(t, "rg-terraexample", "vmterraform", "CustomScriptExtension", "")
+
+// Test if VM Extension Provisioned with Succeeded status
+assert.Equal(t, "Succeeded", *vmExtProperties.ProvisioningState
+```
 
 ### Networking
 
