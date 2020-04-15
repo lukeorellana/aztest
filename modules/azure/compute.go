@@ -55,15 +55,15 @@ func GetVirtualMachineExtensionsClient(subscriptionID string) (*compute.VirtualM
 }
 
 // GetSizeOfVirtualMachine gets the size type of the given Azure Virtual Machine
-func GetSizeOfVirtualMachine(t *testing.T, vmName string, resGroupName string, subscriptionID string) compute.VirtualMachineSizeTypes {
-	size, err := GetSizeOfVirtualMachineE(t, vmName, resGroupName, subscriptionID)
+func GetSizeOfVirtualMachine(t *testing.T, resGroupName string, vmName string, subscriptionID string) compute.VirtualMachineSizeTypes {
+	size, err := GetSizeOfVirtualMachineE(t, resGroupName, vmName, subscriptionID)
 	require.NoError(t, err)
 
 	return size
 }
 
 // GetSizeOfVirtualMachineE gets the size type of the given Azure Virtual Machine
-func GetSizeOfVirtualMachineE(t *testing.T, vmName string, resGroupName string, subscriptionID string) (compute.VirtualMachineSizeTypes, error) {
+func GetSizeOfVirtualMachineE(t *testing.T, resGroupName string, vmName string, subscriptionID string) (compute.VirtualMachineSizeTypes, error) {
 	// Validate resource group name and subscription ID
 	resGroupName, err := getTargetAzureResourceGroupName(resGroupName)
 	if err != nil {
@@ -86,15 +86,15 @@ func GetSizeOfVirtualMachineE(t *testing.T, vmName string, resGroupName string, 
 }
 
 // GetTagsForVirtualMachine gets the tags of the given Virtual Machine as a map
-func GetTagsForVirtualMachine(t *testing.T, vmName string, resGroupName string, subscriptionID string) map[string]string {
-	tags, err := GetTagsForVirtualMachineE(t, vmName, resGroupName, subscriptionID)
+func GetTagsForVirtualMachine(t *testing.T, resGroupName string, vmName string, subscriptionID string) map[string]string {
+	tags, err := GetTagsForVirtualMachineE(t, resGroupName, vmName, subscriptionID)
 	require.NoError(t, err)
 
 	return tags
 }
 
 // GetTagsForVirtualMachineE gets the tags of the given Virtual Machine as a map
-func GetTagsForVirtualMachineE(t *testing.T, vmName string, resGroupName string, subscriptionID string) (map[string]string, error) {
+func GetTagsForVirtualMachineE(t *testing.T, resGroupName string, vmName string, subscriptionID string) (map[string]string, error) {
 	// Setup a blank map to populate and return
 	tags := make(map[string]string)
 
@@ -125,15 +125,15 @@ func GetTagsForVirtualMachineE(t *testing.T, vmName string, resGroupName string,
 }
 
 // GetVMbyName gets the properties of a Virtual Machine in Azure by Name
-func GetVMbyName(t *testing.T, vmName string, resGroupName string, subscriptionID string) compute.VirtualMachine {
-	vm, err := GetVMbyNameE(t, vmName, resGroupName, subscriptionID)
+func GetVMbyName(t *testing.T, resGroupName string, vmName string, subscriptionID string) compute.VirtualMachine {
+	vm, err := GetVMbyNameE(t, resGroupName, vmName, subscriptionID)
 	require.NoError(t, err)
 
 	return vm
 }
 
 // GetVMbyName gets the properties of a Virtual Machine in Azure by Name
-func GetVMbyNameE(t *testing.T, vmName string, resGroupName string, subscriptionID string) (compute.VirtualMachine, error) {
+func GetVMbyNameE(t *testing.T, resGroupName string, vmName string, subscriptionID string) (compute.VirtualMachine, error) {
 	vmProperties := compute.VirtualMachine{}
 
 	// Validate resource group name and subscription ID
@@ -158,15 +158,15 @@ func GetVMbyNameE(t *testing.T, vmName string, resGroupName string, subscription
 }
 
 // GetTypeOfVirtualMachineDisks gets the types of the OS and Data disks attached to the Virtual Machine
-func GetTypeOfVirtualMachineDisks(t *testing.T, vmName string, resGroupName string, subscriptionID string) []string {
-	size, err := GetTypeOfVirtualMachineDisksE(t, vmName, resGroupName, subscriptionID)
+func GetTypeOfVirtualMachineDisks(t *testing.T, resGroupName string, vmName string, subscriptionID string) []string {
+	size, err := GetTypeOfVirtualMachineDisksE(t, resGroupName, vmName, subscriptionID)
 	require.NoError(t, err)
 
 	return size
 }
 
 // GetTypeOfVirtualMachineDisks gets the types of the OS and Data disks attached to the Virtual Machine
-func GetTypeOfVirtualMachineDisksE(t *testing.T, vmName string, resGroupName string, subscriptionID string) ([]string, error) {
+func GetTypeOfVirtualMachineDisksE(t *testing.T, resGroupName string, vmName string, subscriptionID string) ([]string, error) {
 	// Validate resource group name and subscription ID
 	resGroupName, err := getTargetAzureResourceGroupName(resGroupName)
 	if err != nil {
