@@ -71,6 +71,20 @@ vmProperties := azure.GetVMbyName(t, "resourceGroupName", "vmName, "")
 assert.Equal(t, "Windows_Server", *vmExtProperties.VirtualMachineProperties.LicenseType, "Check for BYOL")
 ```
 
+##### Check If VM NIC Is Assigned To NSG
+```
+// Lookup Virtual Machine properties by specifying the Virtual Machine name and Resource Group
+vmProperties := azure.GetVMbyName(t, "resourceGroupName", "vmName, "")
+
+// Look up Subnet and NIC ID associations of NSG
+nsgAssociations := azure.GetAssociationsforNSG(t, nsgName, vnetRG, "")
+
+// For each NIC on Virtual Machine, check that it is assigned to the desired NSG
+for _, NIC := range *vmProperties.NetworkProfile.NetworkInterfaces {
+	assert.Contains(t, nsgAssociations, *NIC.ID, "Check if VM NIC is assigned to NSG")
+}
+```
+
 
 ### Networking
 
@@ -83,6 +97,7 @@ nsgAssociations := azure.GetAssociationsforNSG(t, nsgName, vnetRG, "")
 //Check if subnet is associated wtih NSG
 assert.Contains(t, nsgAssociations, subnetID, "Check if subnet is assigned to NSG")
 ```
+
 
 ##### VNet Exists
 ```
