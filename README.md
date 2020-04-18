@@ -1,7 +1,7 @@
-# aztest
-Aztest is a Go Library for Testing Azure Resources mainly used for Terratest. This code has been forked from Terratest and then expanded upon to include more functions for testing Azure Resources. 
+# AZTest
+Aztest is a Go Library for Testing Azure Resources. Originally forked from [Terratest](https://github.com/gruntwork-io/terratest) and then expanded upon to include more functions for testing Azure Resources. 
 
-Below are examples on how to test each Azure resource:
+Below are examples on how to use the fucntions in this library to test each Azure resource:
 
 
 ### Virtual Machine
@@ -21,11 +21,11 @@ assert.Equal(t, expectedVMSize, actualVMSize, "Check Size of VM")
 // Lookup Disk Types attached to a Virtual Machine
 listVMDiskTypes := azure.GetTypeOfVirtualMachineDisks(t,  "vmName",  "")
 
-// Check if Virtual Machine does not have any Premium_LRS Disks attached
+// Ensure the Virtual Machine does not have any Premium_LRS Disks attached
 assert.NotContains(t, listVMDiskTypes, "Premium_LRS", "Check for correct Disk Type")
 ```
 
-##### Correct Number Of Disks Attached to VM
+##### Correct Number Of Disks Attached To VM
 ```
 // Lookup Disk Types attached to a Virtual Machine
 listVMDiskTypes := azure.GetTypeOfVirtualMachineDisks(t,  "vmName",  "")
@@ -39,7 +39,7 @@ assert.Equal(t, 4, len(vmExtProperties), "Check for correct number of disks atta
 // Lookup Virtual Machine properties by specifying the Virtual Machine name and Resource Group
 vmProperties := azure.GetVMbyName(t, "resourceGroupName", "vmName, "")
 
-// Test is Boot Diagnostics is enabled on the Virtual Machine
+// Test if Boot Diagnostics is enabled on the Virtual Machine
 assert.True(t, *vmProperties.VirtualMachineProperties.DiagnosticsProfile.BootDiagnostics.Enabled, "Check if Boot Diagnostics is enabled")
 ```
 
@@ -49,7 +49,7 @@ assert.True(t, *vmProperties.VirtualMachineProperties.DiagnosticsProfile.BootDia
 // Lookup Virtual Machine properties by specifying the Virtual Machine name and Resource Group
 vmProperties := azure.GetVMbyName(t, "resourceGroupName", "vmName, "")
 
-// Test if VM Provisioned with Succeeded status
+// Test if VM was Provisioned with Succeeded status
 assert.Equal(t, "Succeeded", *vmProperties.VirtualMachineProperties.ProvisioningState, "Check if VM Provisioned successfully")
 ```
 
@@ -88,7 +88,7 @@ for _, NIC := range *vmProperties.NetworkProfile.NetworkInterfaces {
 
 ### Networking
 
-##### Subnet Is Assigned To NSG
+##### Ensure Subnet Is Assigned To NSG
 
 ```
 // Look up Subnet and NIC ID associations of NSG
@@ -98,11 +98,10 @@ nsgAssociations := azure.GetAssociationsforNSG(t, nsgName, vnetRG, "")
 assert.Contains(t, nsgAssociations, subnetID, "Check if subnet is assigned to NSG")
 ```
 
-
-##### VNet Exists
+##### Check If VNet Exists
 ```
 // Look up Virtual Network by Name
-GetVnetbyName(t, resGroupName, vNetName, "")
+azure.GetVnetbyName(t, resGroupName, vNetName, "")
 
 ```
 ##### Subnet Exists In Virtual Network
