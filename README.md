@@ -1,10 +1,28 @@
 # AZTest
 Aztest is a Go Library for Testing Azure Resources. Originally forked from [Terratest](https://github.com/gruntwork-io/terratest) and then expanded upon to include more functions for testing Azure Resources. 
 
-Below are examples on how to use the fucntions in this library to test each Azure resource:
+Below are examples on how to use the functions in this library to test each Azure resource:
+
+
+### Authenticate with Azure to Run Tests
+
+To authenticate with a Service Principal account, login to [Azure Cloud Shell](https://shell.azure.com) and run the following command to create an account and assign it a role to the Azure subscription. Use least permissions possible, for an account used soley for testing and verifying, the reader role is sufficient:
+```
+az ad sp create-for-rbac -n "AzureTestingSP" --role reader \
+    --scopes /subscriptions/{SubID}
+```
+The following enviornment variables must be present in order to authenticate with Azure and successfully run the tests using the Service Principal account:
+```
+export AZURE_TENANT_ID=<Insert Tenant ID>
+export AZURE_CLIENT_ID=<Insert Client ID>
+export AZURE_CLIENT_SECRET=<Insert  Client Secret>
+export ARM_SUBSCRIPTION_ID=<Insert Azure Subscription ID>
+```
 
 
 ### Virtual Machine
+
+Below are examples of how to check various settings of Virtual Machine resources:
 
 ##### Correct VM Size
 ```
