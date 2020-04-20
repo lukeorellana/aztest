@@ -1,7 +1,7 @@
 # AZTest
 Aztest is a Go Library for Testing Azure Resources. Originally forked from [Terratest](https://github.com/gruntwork-io/terratest) and then expanded upon to include more functions for testing Azure Resources. 
 
-Below are examples on how to use the fucntions in this library to test each Azure resource:
+Below are examples on how to use the functions in this library to test each Azure resource:
 
 
 ### Authenticate with Azure to Run Tests
