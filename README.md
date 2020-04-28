@@ -110,17 +110,21 @@ for _, NIC := range *vmProperties.NetworkProfile.NetworkInterfaces {
 
 ```
 // Look up Subnet and NIC ID associations of NSG
-nsgAssociations := azure.GetAssociationsforNSG(t, nsgName, vnetRG, "")
+nsgAssociations := azure.GetAssociationsforNSG(t, vnetRG, nsgName,  "")
 
 //Check if subnet is associated wtih NSG
 assert.Contains(t, nsgAssociations, subnetID, "Check if subnet is assigned to NSG")
 ```
 
-##### Check If VNet Exists
+##### Check If VNet Peering Is Successful
 ```
 // Look up Virtual Network by Name
-azure.GetVnetbyName(t, resGroupName, vNetName, "")
+vnetProperties := azure.GetVnetbyName(t, resGroupName, vNetName, "")
 
+//Check if each VNet Peering Provisioned Successfully
+for _, vnet := range *vnetProperties.VirtualNetworkPeerings {
+    assert.Equal(t, "Succeeded", string(vnet.VirtualNetworkPeeringPropertiesFormat.ProvisioningState), "Check if Peerings provisioned successfully")
+}
 ```
 ##### Subnet Exists In Virtual Network
 ```
