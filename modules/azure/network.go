@@ -8,7 +8,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-
 // GetSecurityGroupsClient is a helper function that will setup an Azure SecurityGroups client
 func GetSecurityGroupsClient(subscriptionID string) (*network.SecurityGroupsClient, error) {
 	// Validate Azure subscription ID
@@ -80,16 +79,14 @@ func GetVirtualNetworkClient(subscriptionID string) (*network.VirtualNetworksCli
 
 // GetSubnetsforVnet gets the list of subnets from a given Azure Virtual Network Name
 func GetSubnetsforVnet(t *testing.T, resGroupName string, vNetName string, subscriptionID string) []string {
-	subnets, err := GetSubnetsforVnetE(t, vNetName, resGroupName, subscriptionID)
+	subnets, err := GetSubnetsforVnetE(t, resGroupName, vNetName, subscriptionID)
 	require.NoError(t, err)
-
 
 	return subnets
 }
 
 // GetSubnetsforVnetE gets the list of subnets from a given Azure Virtual Network Name
 func GetSubnetsforVnetE(t *testing.T, resGroupName string, vNetName string, subscriptionID string) ([]string, error) {
-
 
 	// Validate resource group name and subscription ID
 	resGroupName, err := getTargetAzureResourceGroupName(resGroupName)
@@ -119,16 +116,14 @@ func GetSubnetsforVnetE(t *testing.T, resGroupName string, vNetName string, subs
 
 // GetAssociationsforNSG gets the Subnet and NIC ID associations of a given Network Security Group
 func GetAssociationsforNSG(t *testing.T, resGroupName string, nsgName string, subscriptionID string) []string {
-	nsgAssociations, err := GetAssociationsforNSGE(t, nsgName, resGroupName, subscriptionID)
+	nsgAssociations, err := GetAssociationsforNSGE(t, resGroupName, nsgName, subscriptionID)
 	require.NoError(t, err)
-
 
 	return nsgAssociations
 }
 
 // GetAssociationsforNSG gets the Subnet and NIC ID associations of a given Network Security Group
 func GetAssociationsforNSGE(t *testing.T, resGroupName string, nsgName string, subscriptionID string) ([]string, error) {
-
 
 	// Validate resource group name and subscription ID
 	resGroupName, err := getTargetAzureResourceGroupName(resGroupName)
@@ -157,9 +152,9 @@ func GetAssociationsforNSGE(t *testing.T, resGroupName string, nsgName string, s
 			associatedNics[i] = *nic.ID
 		}
 		nsgAssociations = append(nsgAssociations, associatedNics...)
-		
+
 	}
-	
+
 	// Collect any subnets associated to the Network Security Group
 	if nsg.SecurityGroupPropertiesFormat.Subnets != nil {
 		associatedSubnets := make([]string, len(*nsg.SecurityGroupPropertiesFormat.Subnets))
@@ -169,17 +164,13 @@ func GetAssociationsforNSGE(t *testing.T, resGroupName string, nsgName string, s
 		nsgAssociations = append(nsgAssociations, associatedSubnets...)
 	}
 
-	
-	
-
 	return nsgAssociations, nil
 }
 
 // GetVnetbyName gets propteries of the Azure Virtual Network by its given name
 func GetVnetbyName(t *testing.T, resGroupName string, vNetName string, subscriptionID string) network.VirtualNetwork {
-	vnet, err := GetVnetbyNameE(t, vNetName, resGroupName, subscriptionID)
+	vnet, err := GetVnetbyNameE(t, resGroupName, vNetName, subscriptionID)
 	require.NoError(t, err)
-
 
 	return vnet
 }
@@ -208,12 +199,10 @@ func GetVnetbyNameE(t *testing.T, resGroupName string, vNetName string, subscrip
 	return vnet, nil
 }
 
-
 // GetSubnetbyName gets propteries of the Azure Subnet by its given name
 func GetSubnetbyName(t *testing.T, resGroupName string, vNetName string, sNetName string, subscriptionID string) network.Subnet {
 	snet, err := GetSubnetbyNameE(t, resGroupName, vNetName, sNetName, subscriptionID)
 	require.NoError(t, err)
-
 
 	return snet
 }
