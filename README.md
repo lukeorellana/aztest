@@ -27,17 +27,16 @@ Below are examples of how to check various settings of Virtual Machine resources
 ##### Correct VM Size
 ```
 // Look up the size of the given Virtual Machine
-actualVMSize := azure.GetSizeOfVirtualMachine(t, resourceGroupName, vmName,  "")
-expectedVMSize := compute.VirtualMachineSizeTypes("Standard_B1s")
+actualVMSize := azure.GetSizeOfVirtualMachine(t, "resourceGroupName", "vmName",  "")
 
 // Test that the Virtual Machine size matches the Terraform specification
-assert.Equal(t, expectedVMSize, actualVMSize, "Check Size of VM")
+assert.Equal(t, "Standard_B1s", string(actualVMSize), "Check Size of VM")
 ```
 
 ##### Correct VM Disk Type On All Disks
 ```
 // Lookup Disk Types attached to a Virtual Machine
-listVMDiskTypes := azure.GetTypeOfVirtualMachineDisks(t,  "vmName",  "")
+listVMDiskTypes := azure.GetTypeOfVirtualMachineDisks(t, "resourceGroupName", "vmName",  "")
 
 // Ensure the Virtual Machine does not have any Premium_LRS Disks attached
 assert.NotContains(t, listVMDiskTypes, "Premium_LRS", "Check for correct Disk Type")
@@ -46,7 +45,7 @@ assert.NotContains(t, listVMDiskTypes, "Premium_LRS", "Check for correct Disk Ty
 ##### Correct Number Of Disks Attached To VM
 ```
 // Lookup Disk Types attached to a Virtual Machine
-listVMDiskTypes := azure.GetTypeOfVirtualMachineDisks(t,  "vmName",  "")
+listVMDiskTypes := azure.GetTypeOfVirtualMachineDisks(t,  "resourceGroupName", "vmName",  "")
 
 // Count the Number of Disks Attached to the Virtual Machine and check if there are the correct number
 assert.Equal(t, 4, len(vmExtProperties), "Check for correct number of disks attached to VM")
@@ -55,7 +54,7 @@ assert.Equal(t, 4, len(vmExtProperties), "Check for correct number of disks atta
 ##### Boot Diagnostics Enabled
 ```
 // Lookup Virtual Machine properties by specifying the Virtual Machine name and Resource Group
-vmProperties := azure.GetVMbyName(t, "resourceGroupName", "vmName, "")
+vmProperties := azure.GetVMbyName(t, "resourceGroupName", "vmName", "")
 
 // Test if Boot Diagnostics is enabled on the Virtual Machine
 assert.True(t, *vmProperties.VirtualMachineProperties.DiagnosticsProfile.BootDiagnostics.Enabled, "Check if Boot Diagnostics is enabled")
